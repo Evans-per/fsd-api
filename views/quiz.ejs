@@ -179,15 +179,32 @@
       localStorage.setItem('userAnswers', JSON.stringify(userAnswers));
 
       // Save stats
-      const stats = JSON.parse(localStorage.getItem('quizStats') || '{"quizzes": [], "taken": 0}');
-      stats.quizzes.push({
+      const stats = JSON.parse(localStorage.getItem('quizStats') || '{\"quizzes\": [], \"taken\": 0}');
+      const categoryStats = JSON.parse(localStorage.getItem('categoryStats') || '{}');
+      
+      const quizData = {
         date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString(),
         score: score,
         total: questions.length,
-        percentage: percentage
-      });
+        percentage: percentage,
+        timeTaken: timeTaken,
+        category: questions[0].category || 'General'
+      };
+      
+      stats.quizzes.push(quizData);
       stats.taken = stats.quizzes.length;
       localStorage.setItem('quizStats', JSON.stringify(stats));
+
+      // Track category stats
+      const category = questions[0].category || 'General';
+      if (!categoryStats[category]) {
+        categoryStats[category] = { attempts: 0, totalScore: 0, bestScore: 0 };
+      }
+      categoryStats[category].attempts += 1;
+      categoryStats[category].totalScore += percentage;
+      categoryStats[category].bestScore = Math.max(categoryStats[category].bestScore, percentage);
+      localStorage.setItem('categoryStats', JSON.stringify(categoryStats));
 
       // Redirect with a small delay for better UX
       setTimeout(() => {

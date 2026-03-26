@@ -60,6 +60,10 @@
     </div>
 
     <div class="quiz-controls" style="margin-top: 40px;">
+      <button class="btn btn-secondary" onclick="shareResults()">
+        <i class="fas fa-share-alt"></i>
+        Share Results
+      </button>
       <button class="btn btn-secondary" onclick="viewAnswers()">
         <i class="fas fa-list-check"></i>
         Review Answers
@@ -213,6 +217,21 @@
       if (event.target == modal) {
         modal.style.display = 'none';
       }
+    }
+
+    function shareResults() {
+      const score = document.getElementById('score').textContent;
+      const total = document.getElementById('total').textContent;
+      const percentage = document.getElementById('percentage').textContent;
+      const message = `🎯 I just scored ${score}/${total} (${percentage}) on Quiz Master! Can you beat my score?`;
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(message).then(() => {
+        alert('Results copied to clipboard! Share it with friends! 📋');
+      }).catch(() => {
+        // Fallback
+        alert('Score: ' + score + '/' + total + ' (' + percentage + ')');
+      });
     }
   </script>
 </body>

@@ -5,10 +5,11 @@
 }
 
 :root {
-  --primary: #6366f1;
-  --primary-dark: #4f46e5;
-  --primary-light: #818cf8;
-  --accent: #ec4899;
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --primary-light: #6366f1;
+  --accent: #06b6d4;
+  --accent-dark: #0891b2;
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
@@ -24,7 +25,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #3730a3 25%, #0891b2 75%, #06b6d4 100%);
   background-attachment: fixed;
   min-height: 100vh;
   padding: 20px;
@@ -80,7 +81,7 @@ body {
 }
 
 h1 {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -96,8 +97,8 @@ h1 {
 }
 
 h1 i {
-  color: #667eea;
-  -webkit-text-fill-color: #667eea;
+  color: #4f46e5;
+  -webkit-text-fill-color: #4f46e5;
   animation: bounce 2s infinite;
   font-size: 0.95em;
 }
@@ -195,7 +196,7 @@ select:focus {
 /* Button Styles */
 .btn {
   padding: 15px 35px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -203,7 +204,7 @@ select:focus {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
   min-height: 52px;
   display: inline-flex;
   align-items: center;
@@ -226,7 +227,7 @@ select:focus {
 
 .btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.45);
+  box-shadow: 0 15px 35px rgba(79, 70, 229, 0.45);
 }
 
 .btn:hover::before {
@@ -248,14 +249,14 @@ select:focus {
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.95);
-  color: #667eea;
-  border: 2px solid #667eea;
+  color: #4f46e5;
+  border: 2px solid #4f46e5;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .btn-secondary:hover {
   background: white;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
 }
 
 .btn-nav {
@@ -295,7 +296,7 @@ select:focus {
 .question-number {
   font-size: 1.3em;
   font-weight: 800;
-  color: #667eea;
+  color: #4f46e5;
   letter-spacing: 0.5px;
 }
 
@@ -304,9 +305,9 @@ select:focus {
   font-weight: 800;
   padding: 12px 28px;
   border-radius: 50px;
-  background: linear-gradient(135deg, #ec4899 0%, #f093fb 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
   color: white;
-  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.3);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
   min-width: 140px;
   text-align: center;
   letter-spacing: 1px;
@@ -318,8 +319,8 @@ select:focus {
 
 .question-category {
   display: inline-block;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-  color: #667eea;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+  color: #4f46e5;
   padding: 8px 16px;
   border-radius: 25px;
   font-size: 0.9em;
@@ -330,6 +331,7 @@ select:focus {
 
 .question-category i {
   margin-right: 6px;
+  color: #4f46e5;
 }
 
 .difficulty-badge {
@@ -374,9 +376,9 @@ select:focus {
 
 .progress {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: linear-gradient(90deg, #4f46e5 0%, #06b6d4 100%);
   transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
   position: relative;
 }
 
@@ -424,15 +426,15 @@ select:focus {
   top: 0;
   height: 100%;
   width: 5px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
   transform: scaleY(0);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: bottom;
 }
 
 .answer-label:hover {
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.05);
+  border-color: #4f46e5;
+  background: rgba(79, 70, 229, 0.05);
   transform: translateX(6px);
 }
 
@@ -445,7 +447,7 @@ select:focus {
   height: 24px;
   margin-right: 16px;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: #4f46e5;
 }
 
 .answer-label span {
@@ -456,8 +458,8 @@ select:focus {
 }
 
 .answer-label.selected {
-  border-color: #667eea;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+  border-color: #4f46e5;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
 }
 
 /* Quiz Controls */
@@ -493,7 +495,7 @@ select:focus {
 
 .score-fraction {
   font-size: 2.5em;
-  color: #667eea;
+  color: #4f46e5;
   margin: 25px 0;
   font-weight: 800;
 }
@@ -501,7 +503,7 @@ select:focus {
 #percentage {
   font-size: 3em;
   font-weight: 900;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -517,18 +519,18 @@ select:focus {
 
 /* Stats Section */
 .stats-section {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
   padding: 28px;
   border-radius: 16px;
   margin: 25px 0;
-  border: 2px solid rgba(102, 126, 234, 0.15);
+  border: 2px solid rgba(79, 70, 229, 0.15);
   animation: slideUp 0.7s ease-out 0.15s both;
 }
 
 .stats-title {
   font-size: 1.3em;
   font-weight: 800;
-  color: #667eea;
+  color: #4f46e5;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -545,7 +547,7 @@ select:focus {
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(102, 126, 234, 0.15);
+  border-bottom: 1px solid rgba(79, 70, 229, 0.15);
 }
 
 .stat-item:last-child {
@@ -561,7 +563,7 @@ select:focus {
 .stat-value {
   font-size: 1.2em;
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -708,10 +710,97 @@ select:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #667eea;
+  background: #4f46e5;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #764ba2;
+  background: #06b6d4;
+}
+
+/* Enhanced Card Hover Effects */
+.result-card:hover,
+.stats-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(79, 70, 229, 0.2);
+}
+
+/* Pulse Animation for Streak */
+.stat-value:has(+ *):nth-child(3) {
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 0 rgba(79, 70, 229, 0); }
+  50% { text-shadow: 0 0 8px rgba(79, 70, 229, 0.3); }
+}
+
+/* Answer animation on load */
+@keyframes slideInAnswer {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.answer-label {
+  animation: slideInAnswer 0.3s ease-out forwards;
+}
+
+.answer-label:nth-child(1) { animation-delay: 0.05s; }
+.answer-label:nth-child(2) { animation-delay: 0.1s; }
+.answer-label:nth-child(3) { animation-delay: 0.15s; }
+.answer-label:nth-child(4) { animation-delay: 0.2s; }
+
+/* Category badge hover */
+.question-category:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+/* Difficulty badge colors updated */
+.difficulty-easy {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #059669;
+  border: 1px solid #6ee7b7;
+}
+
+.difficulty-medium {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #d97706;
+  border: 1px solid #fcd34d;
+}
+
+.difficulty-hard {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+/* Form inputs enhancement */
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Badge and achievement animations */
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Stats grid */
+.stat-item {
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateX(4px);
 }
