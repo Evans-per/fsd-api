@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz - Quiz Master</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="quiz-header">
+      <div class="question-counter">
+        <div class="question-number">Question <span id="current">1</span> of <span id="total">10</span></div>
+        <div class="timer" id="timer">0:00</div>
+      </div>
+      <div id="categoryBadge" class="question-category"></div>
+      <div id="difficultyBadge" class="difficulty-badge"></div>
+      
+      <div class="progress-bar">
+        <div id="progress" class="progress"></div>
+      </div>
+    </div>
+
+    <div class="quiz-content">
+      <h3 id="question">Question will appear here</h3>
+      <div id="answers" class="answers-container"></div>
+    </div>
+
+    <div class="quiz-controls">
+      <button id="prevBtn" class="btn btn-secondary btn-nav" onclick="previousQuestion()"><i class="fas fa-arrow-left"></i> Previous</button>
+      <button id="nextBtn" class="btn btn-nav" onclick="nextQuestion()">Next <i class="fas fa-arrow-right"></i></button>
+      <button id="submitBtn" class="btn btn-submit" onclick="submitQuiz()" style="display:none;"><i class="fas fa-check"></i> Submit Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    let questions = [];
+    let currentQuestion = 0;
+    let userAnswers = [];
+    let startTime = 0;
+    let timerInterval = null;
+
+    window.onload = () => {
+      const stored = localStorage.getItem('questions');
+      if (!stored) {
+        window.location.href = '/';
+        return;
+      }
+      questions = JSON.parse(stored);
+      userAnswers = new Array(questions.length).fill(null);
+      startTime = parseInt(localStorage.getItem('quizStartTime') || Date.now());
+      
+      displayQuestion();
+      startTimer();
+    };
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      
+      timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        const timerEl = document.getElementById('timer');
+        timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function displayQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('question').textContent = q.question;
+      document.getElementById('current').textContent = currentQuestion + 1;
+      document.getElementById('total').textContent = questions.length;
+      
+      // Display category
+      const categoryBadge = document.getElementById('categoryBadge');
+      categoryBadge.innerHTML = '<i class="fas fa-book"></i> ' + q.category;
+      
+      // Display difficulty badge
+      const diffBadge = document.getElementById('difficultyBadge');
+      const difficultyClass = 'difficulty-' + q.difficulty;
+      diffBadge.className = 'difficulty-badge ' + difficultyClass;
+      
+      let diffIcon = '';
+      if (q.difficulty === 'easy') {
+        diffIcon = '<i class="fas fa-circle" style="color: #2E7D32;"></i>';
+      } else if (q.difficulty === 'medium') {
+        diffIcon = '<i class="fas fa-circle" style="color: #E65100;"></i>';
+      } else {
+        diffIcon = '<i class="fas fa-circle" style="color: #C62828;"></i>';
+      }
+      diffBadge.innerHTML = diffIcon + ' ' + q.difficulty.toUpperCase();
+      
+      // Shuffle answers
+      const allAnswers = [...q.incorrect_answers, q.correct_answer].sort(() => Math.random() - 0.5);
+      
+      const answersDiv = document.getElementById('answers');
+      answersDiv.innerHTML = '';
+      
+      allAnswers.forEach((answer, idx) => {
+        const label = document.createElement('label');
+        label.className = 'answer-label fade-in';
+        label.innerHTML = `
+          <input type="radio" name="answer" value="${answer}" ${userAnswers[currentQuestion] === answer ? 'checked' : ''}>
+          <span>${answer}</span>
+        `;
+        answersDiv.appendChild(label);
+      });
+
+      // Update button visibility
+      document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'block' : 'none';
+      document.getElementById('nextBtn').style.display = currentQuestion < questions.length - 1 ? 'block' : 'none';
+      document.getElementById('submitBtn').style.display = currentQuestion === questions.length - 1 ? 'block' : 'none';
+
+      // Update progress bar
+      const progress = ((currentQuestion + 1) / questions.length) * 100;
+      document.getElementById('progress').style.width = progress + '%';
+
+      // Save answer
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (selected) {
+        userAnswers[currentQuestion] = selected.value;
+      }
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (selected) {
+        userAnswers[currentQuestion] = selected.value;
+      }
+      
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        displayQuestion();
+      }
+    }
+
+    function previousQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (selected) {
+        userAnswers[currentQuestion] = selected.value;
+      }
+      
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        displayQuestion();
+      }
+    }
+
+    function submitQuiz() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (selected) {
+        userAnswers[currentQuestion] = selected.value;
+      }
+
+      clearInterval(timerInterval);
+
+      // Calculate score
+      let score = 0;
+      questions.forEach((q, idx) => {
+        if (userAnswers[idx] === q.correct_answer) score++;
+      });
+
+      const percentage = Math.round((score / questions.length) * 100);
+      const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+
+      localStorage.setItem('score', score);
+      localStorage.setItem('total', questions.length);
+      localStorage.setItem('percentage', percentage);
+      localStorage.setItem('timeTaken', timeTaken);
+      localStorage.setItem('userAnswers', JSON.stringify(userAnswers));
+
+      // Save stats
+      const stats = JSON.parse(localStorage.getItem('quizStats') || '{"quizzes": [], "taken": 0}');
+      stats.quizzes.push({
+        date: new Date().toLocaleDateString(),
+        score: score,
+        total: questions.length,
+        percentage: percentage
+      });
+      stats.taken = stats.quizzes.length;
+      localStorage.setItem('quizStats', JSON.stringify(stats));
+
+      window.location.href = '/result';
+    }
+  </script>
+</body>
+</html>

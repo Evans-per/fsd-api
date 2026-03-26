@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results - Quiz Master</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container result-container">
+    <h1><i class="fas fa-check-circle"></i> Quiz Complete!</h1>
+    
+    <div class="result-card">
+      <div class="result-emoji" id="emoji"></div>
+      <h2>Your Score</h2>
+      
+      <div class="score-fraction">
+        <span id="score">0</span> / <span id="total">10</span>
+      </div>
+      
+      <div id="percentage">0%</div>
+      <p id="message">Great Job!</p>
+    </div>
+
+    <div class="stats-section">
+      <div class="stats-title"><i class="fas fa-stopwatch"></i> Quiz Statistics</div>
+      <div class="stat-item">
+        <span class="stat-label">Time Taken:</span>
+        <span class="stat-value" id="timeTaken">0s</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Correct Answers:</span>
+        <span class="stat-value" id="correctCount">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Accuracy:</span>
+        <span class="stat-value" id="accuracy">0%</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Average Time/Question:</span>
+        <span class="stat-value" id="avgTime">0s</span>
+      </div>
+    </div>
+
+    <div class="stats-section">
+      <div class="stats-title"><i class="fas fa-chart-pie"></i> Performance Rating</div>
+      <div style="text-align: center; padding: 20px 0;">
+        <div id="performanceBar" style="background: linear-gradient(90deg, #58C4BD 0%, #89CFF0 100%); height: 30px; border-radius: 15px; position: relative; overflow: hidden;">
+          <div id="performanceLevel" style="height: 100%; background: linear-gradient(90deg, #89CFF0 0%, #58C4BD 100%); width: 0%; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; transition: width 1s ease;"></div>
+        </div>
+        <p id="performanceText" style="margin-top: 15px; font-size: 1.2em; color: #58C4BD; font-weight: 700;"></p>
+      </div>
+    </div>
+
+    <div class="quiz-controls" style="margin-top: 40px;">
+      <button class="btn btn-secondary" onclick="viewAnswers()"><i class="fas fa-clipboard"></i> Review Answers</button>
+      <button class="btn" onclick="window.location.href='/'"><i class="fas fa-redo"></i> Take Another Quiz</button>
+    </div>
+  </div>
+
+  <!-- Answer Review Modal -->
+  <div id="reviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; overflow-y: auto; padding: 20px;">
+    <div class="container" style="margin: 30px auto;">
+      <h2 style="margin-bottom: 30px;"><i class="fas fa-list-check"></i> Answer Review</h2>
+      <div id="reviewContent"></div>
+      <button class="btn" onclick="closeReview()" style="width: 100%; margin-top: 20px;">Close Review</button>
+    </div>
+  </div>
+
+  <script>
+    let questions = [];
+
+    window.onload = () => {
+      const score = parseInt(localStorage.getItem('score') || 0);
+      const total = parseInt(localStorage.getItem('total') || 10);
+      const percentage = parseInt(localStorage.getItem('percentage') || 0);
+      const timeTaken = parseInt(localStorage.getItem('timeTaken') || 0);
+      const questionsStr = localStorage.getItem('questions');
+      
+      if (questionsStr) {
+        questions = JSON.parse(questionsStr);
+      }
+
+      document.getElementById('score').textContent = score;
+      document.getElementById('total').textContent = total;
+      document.getElementById('percentage').textContent = percentage + '%';
+      document.getElementById('correctCount').textContent = score + ' out of ' + total;
+      document.getElementById('accuracy').textContent = percentage + '%';
+
+      // Format time
+      const minutes = Math.floor(timeTaken / 60);
+      const seconds = timeTaken % 60;
+      document.getElementById('timeTaken').textContent = minutes + 'm ' + seconds + 's';
+
+      // Average time per question
+      const avgTime = Math.round(timeTaken / total);
+      document.getElementById('avgTime').textContent = avgTime + 's';
+
+      // Set icon and message
+      let icon = '<i class="fas fa-smile"></i>';
+      let message = 'Good Job!';
+      
+      if (percentage >= 90) {
+        icon = '<i class="fas fa-trophy"></i>';
+        message = 'Outstanding! You are a Quiz Master!';
+      } else if (percentage >= 80) {
+        icon = '<i class="fas fa-star"></i>';
+        message = 'Excellent! Great Knowledge!';
+      } else if (percentage >= 70) {
+        icon = '<i class="fas fa-smile"></i>';
+        message = 'Very Good! Keep it up!';
+      } else if (percentage >= 60) {
+        icon = '<i class="fas fa-thumbs-up"></i>';
+        message = 'Not Bad! Try Again!';
+      } else {
+        icon = '<i class="fas fa-dumbbell"></i>';
+        message = 'Keep Learning! You\'ll do better next time!';
+      }
+
+      document.getElementById('emoji').innerHTML = icon;
+      document.getElementById('message').textContent = message;
+
+      // Performance bar
+      document.getElementById('performanceLevel').style.width = percentage + '%';
+      
+      let performanceText = 'Average';
+      if (percentage >= 90) performanceText = 'Excellent';
+      else if (percentage >= 80) performanceText = 'Very Good';
+      else if (percentage >= 70) performanceText = 'Good';
+      else if (percentage >= 60) performanceText = 'Fair';
+      else performanceText = 'Needs Improvement';
+      
+      document.getElementById('performanceText').textContent = performanceText;
+    };
+
+    function viewAnswers() {
+      const userAnswers = JSON.parse(localStorage.getItem('userAnswers') || '[]');
+      const reviewContent = document.getElementById('reviewContent');
+      reviewContent.innerHTML = '';
+
+      questions.forEach((q, idx) => {
+        const isCorrect = userAnswers[idx] === q.correct_answer;
+        const icon = isCorrect ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-times-circle"></i>';
+        
+        const reviewItem = document.createElement('div');
+        reviewItem.style.cssText = 'margin-bottom: 20px; padding: 15px; border-radius: 10px; background: ' + (isCorrect ? '#E8F5E9' : '#FFEBEE') + '; border-left: 4px solid ' + (isCorrect ? '#4CAF50' : '#F44336');
+        
+        reviewItem.innerHTML = `
+          <p style="font-weight: 700; margin-bottom: 10px; color: #333;">${icon} Question ${idx + 1}: ${q.question}</p>
+          <p style="margin: 8px 0; color: #666;"><strong>Your Answer:</strong> ${userAnswers[idx] || 'Not Answered'}</p>
+          <p style="margin: 8px 0; color: #4CAF50;"><strong>Correct Answer:</strong> ${q.correct_answer}</p>
+        `;
+        
+        reviewContent.appendChild(reviewItem);
+      });
+
+      document.getElementById('reviewModal').style.display = 'block';
+    }
+
+    function closeReview() {
+      document.getElementById('reviewModal').style.display = 'none';
+    }
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+      const modal = document.getElementById('reviewModal');
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
