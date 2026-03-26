@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz - Quiz Master</title>
+  <title>Quiz Challenge - Quiz Master</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -11,8 +11,14 @@
   <div class="container">
     <div class="quiz-header">
       <div class="question-counter">
-        <div class="question-number">Question <span id="current">1</span> of <span id="total">10</span></div>
-        <div class="timer" id="timer">0:00</div>
+        <div class="question-number">
+          <i class="fas fa-list-ol"></i>
+          Question <span id="current">1</span> of <span id="total">10</span>
+        </div>
+        <div class="timer" id="timer">
+          <i class="fas fa-hourglass-start"></i>
+          <span>0:00</span>
+        </div>
       </div>
       <div id="categoryBadge" class="question-category"></div>
       <div id="difficultyBadge" class="difficulty-badge"></div>
@@ -28,9 +34,18 @@
     </div>
 
     <div class="quiz-controls">
-      <button id="prevBtn" class="btn btn-secondary btn-nav" onclick="previousQuestion()"><i class="fas fa-arrow-left"></i> Previous</button>
-      <button id="nextBtn" class="btn btn-nav" onclick="nextQuestion()">Next <i class="fas fa-arrow-right"></i></button>
-      <button id="submitBtn" class="btn btn-submit" onclick="submitQuiz()" style="display:none;"><i class="fas fa-check"></i> Submit Quiz</button>
+      <button id="prevBtn" class="btn btn-secondary btn-nav" onclick="previousQuestion()" style="display: none;">
+        <i class="fas fa-chevron-left"></i>
+        Previous
+      </button>
+      <button id="nextBtn" class="btn btn-nav" onclick="nextQuestion()">
+        Next
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <button id="submitBtn" class="btn btn-submit" onclick="submitQuiz()" style="display:none;">
+        <i class="fas fa-check-circle"></i>
+        Submit Quiz
+      </button>
     </div>
   </div>
 
@@ -63,7 +78,8 @@
         const minutes = Math.floor(elapsed / 60);
         const seconds = elapsed % 60;
         const timerEl = document.getElementById('timer');
-        timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        timerEl.innerHTML = `<i class="fas fa-hourglass-start"></i> <span>${timeString}</span>`;
       }, 1000);
     }
 
@@ -75,22 +91,13 @@
       
       // Display category
       const categoryBadge = document.getElementById('categoryBadge');
-      categoryBadge.innerHTML = '<i class="fas fa-book"></i> ' + q.category;
+      categoryBadge.innerHTML = '<i class="fas fa-tag"></i> ' + q.category;
       
       // Display difficulty badge
       const diffBadge = document.getElementById('difficultyBadge');
       const difficultyClass = 'difficulty-' + q.difficulty;
       diffBadge.className = 'difficulty-badge ' + difficultyClass;
-      
-      let diffIcon = '';
-      if (q.difficulty === 'easy') {
-        diffIcon = '<i class="fas fa-circle" style="color: #2E7D32;"></i>';
-      } else if (q.difficulty === 'medium') {
-        diffIcon = '<i class="fas fa-circle" style="color: #E65100;"></i>';
-      } else {
-        diffIcon = '<i class="fas fa-circle" style="color: #C62828;"></i>';
-      }
-      diffBadge.innerHTML = diffIcon + ' ' + q.difficulty.toUpperCase();
+      diffBadge.innerHTML = q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1);
       
       // Shuffle answers
       const allAnswers = [...q.incorrect_answers, q.correct_answer].sort(() => Math.random() - 0.5);
@@ -100,55 +107,55 @@
       
       allAnswers.forEach((answer, idx) => {
         const label = document.createElement('label');
-        label.className = 'answer-label fade-in';
+        label.className = 'answer-label';
+        if (userAnswers[currentQuestion] === answer) {
+          label.classList.add('selected');
+        }
         label.innerHTML = `
-          <input type="radio" name="answer" value="${answer}" ${userAnswers[currentQuestion] === answer ? 'checked' : ''}>
+          <input type="radio" name="answer" value="${answer}" ${userAnswers[currentQuestion] === answer ? 'checked' : ''} onchange="handleAnswerChange(this)">
           <span>${answer}</span>
         `;
         answersDiv.appendChild(label);
       });
 
       // Update button visibility
-      document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'block' : 'none';
-      document.getElementById('nextBtn').style.display = currentQuestion < questions.length - 1 ? 'block' : 'none';
-      document.getElementById('submitBtn').style.display = currentQuestion === questions.length - 1 ? 'block' : 'none';
+      document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'inline-flex' : 'none';
+      document.getElementById('nextBtn').style.display = currentQuestion < questions.length - 1 ? 'inline-flex' : 'none';
+      document.getElementById('submitBtn').style.display = currentQuestion === questions.length - 1 ? 'inline-flex' : 'none';
 
       // Update progress bar
       const progress = ((currentQuestion + 1) / questions.length) * 100;
       document.getElementById('progress').style.width = progress + '%';
+    }
 
-      // Save answer
-      const selected = document.querySelector('input[name="answer"]:checked');
-      if (selected) {
-        userAnswers[currentQuestion] = selected.value;
-      }
+    function handleAnswerChange(element) {
+      userAnswers[currentQuestion] = element.value;
+      
+      // Update selected state visually
+      document.querySelectorAll('.answer-label').forEach(label => {
+        label.classList.remove('selected');
+      });
+      element.parentElement.classList.add('selected');
     }
 
     function nextQuestion() {
-      const selected = document.querySelector('input[name="answer"]:checked');
-      if (selected) {
-        userAnswers[currentQuestion] = selected.value;
-      }
-      
       if (currentQuestion < questions.length - 1) {
         currentQuestion++;
         displayQuestion();
+        window.scrollTo(0, 0);
       }
     }
 
     function previousQuestion() {
-      const selected = document.querySelector('input[name="answer"]:checked');
-      if (selected) {
-        userAnswers[currentQuestion] = selected.value;
-      }
-      
       if (currentQuestion > 0) {
         currentQuestion--;
         displayQuestion();
+        window.scrollTo(0, 0);
       }
     }
 
     function submitQuiz() {
+      // Make sure to save the current answer
       const selected = document.querySelector('input[name="answer"]:checked');
       if (selected) {
         userAnswers[currentQuestion] = selected.value;
@@ -182,7 +189,10 @@
       stats.taken = stats.quizzes.length;
       localStorage.setItem('quizStats', JSON.stringify(stats));
 
-      window.location.href = '/result';
+      // Redirect with a small delay for better UX
+      setTimeout(() => {
+        window.location.href = '/result';
+      }, 300);
     }
   </script>
 </body>
