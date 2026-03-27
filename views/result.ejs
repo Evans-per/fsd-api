@@ -3,161 +3,205 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Results - Quiz Master</title>
+  <meta name="description" content="View your quiz results, review answers, and track your performance.">
+  <title>Results — Quiz Master</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <div class="container result-container">
-    <h1><i class="fas fa-flag-checkered"></i> Quiz Complete!</h1>
-    
-    <div class="result-card">
-      <div class="result-emoji" id="emoji"></div>
-      <h2>Your Score</h2>
-      
-      <div class="score-fraction">
-        <span id="score">0</span> / <span id="total">10</span>
-      </div>
-      
-      <div id="percentage">0%</div>
-      <p id="message">Great Job!</p>
-    </div>
-
-    <div class="stats-section">
-      <div class="stats-title">
-        <i class="fas fa-chart-bar"></i>
-        Quiz Statistics
-      </div>
-      <div class="stat-item">
-        <span class="stat-label"><i class="fas fa-clock"></i> Time Taken:</span>
-        <span class="stat-value" id="timeTaken">0s</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label"><i class="fas fa-check"></i> Correct Answers:</span>
-        <span class="stat-value" id="correctCount">0</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label"><i class="fas fa-bullseye"></i> Accuracy:</span>
-        <span class="stat-value" id="accuracy">0%</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label"><i class="fas fa-tachometer-alt"></i> Avg Time/Question:</span>
-        <span class="stat-value" id="avgTime">0s</span>
+  <div class="app-wrapper">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <a href="/" class="logo">
+        <div class="logo-icon"><i class="fas fa-brain"></i></div>
+        Quiz Master
+      </a>
+      <div style="display:flex;gap:8px;">
+        <button id="soundToggle" class="sound-toggle" onclick="SoundManager.toggle()" title="Toggle Sound">
+          <i class="fas fa-volume-high"></i>
+        </button>
+        <button id="themeToggle" class="theme-toggle" onclick="ThemeManager.toggle()" title="Toggle Dark Mode">
+          <i class="fas fa-moon"></i>
+        </button>
       </div>
     </div>
 
-    <div class="stats-section">
-      <div class="stats-title">
-        <i class="fas fa-medal"></i>
-        Performance Rating
-      </div>
-      <div style="text-align: center; padding: 25px 0;">
-        <div id="performanceBar" style="background: rgba(102, 126, 234, 0.1); height: 16px; border-radius: 20px; position: relative; overflow: hidden; border: 2px solid rgba(102, 126, 234, 0.2);">
-          <div id="performanceLevel" style="height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%); width: 0%; border-radius: 18px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+    <!-- Main Card -->
+    <div class="container" style="max-width:960px;">
+      <h1 class="page-title"><i class="fas fa-flag-checkered"></i> Quiz Complete!</h1>
+
+      <!-- Score Ring -->
+      <div class="result-card">
+        <div class="result-emoji" id="emoji"></div>
+
+        <div class="score-ring-wrapper">
+          <svg class="score-ring" width="100%" height="100%" viewBox="0 0 160 160">
+            <defs>
+              <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+            <circle class="score-ring-bg" cx="80" cy="80" r="70"/>
+            <circle class="score-ring-fill" id="scoreRingFill" cx="80" cy="80" r="70"/>
+          </svg>
+          <div class="score-ring-text">
+            <div class="score-ring-value" id="ringPercentage">0%</div>
+            <div class="score-ring-label">Accuracy</div>
+          </div>
         </div>
-        <p id="performanceText" style="margin-top: 18px; font-size: 1.3em; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></p>
+
+        <div class="score-fraction">
+          <span id="score">0</span> / <span id="total">10</span>
+        </div>
+        <p class="result-message" id="message">Great Job!</p>
+
+        <div id="highScoreBanner" style="display:none;margin-top:16px;padding:10px 20px;border-radius:var(--radius-full);background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-weight:700;font-size:0.95rem;display:inline-flex;align-items:center;gap:8px;">
+          <i class="fas fa-crown"></i> New High Score!
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="stats-section">
+        <div class="stats-title">
+          <i class="fas fa-chart-bar"></i>
+          Quiz Statistics
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-value" id="timeTaken">0s</div>
+            <div class="stat-card-label">Time Taken</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-value" id="correctCount">0</div>
+            <div class="stat-card-label">Correct</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-value" id="accuracy">0%</div>
+            <div class="stat-card-label">Accuracy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-value" id="avgTime">0s</div>
+            <div class="stat-card-label">Avg / Question</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Rating -->
+      <div class="stats-section">
+        <div class="stats-title">
+          <i class="fas fa-medal"></i>
+          Performance Rating
+        </div>
+        <div style="padding:12px 0;">
+          <div class="performance-bar-track">
+            <div class="performance-bar-fill" id="performanceLevel"></div>
+          </div>
+          <div class="performance-text" id="performanceText"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="quiz-controls" style="margin-top:32px;">
+        <button class="btn btn-ghost" onclick="shareResults()" id="shareBtn">
+          <i class="fas fa-share-alt"></i> Share
+        </button>
+        <button class="btn btn-ghost" onclick="viewAnswers()" id="reviewBtn">
+          <i class="fas fa-list-check"></i> Review
+        </button>
+        <button class="btn btn-primary" onclick="window.location.href='/'" id="retryBtn">
+          <i class="fas fa-rotate-right"></i> New Quiz
+        </button>
       </div>
     </div>
-
-    <div class="quiz-controls" style="margin-top: 40px;">
-      <button class="btn btn-secondary" onclick="shareResults()">
-        <i class="fas fa-share-alt"></i>
-        Share Results
-      </button>
-      <button class="btn btn-secondary" onclick="viewAnswers()">
-        <i class="fas fa-list-check"></i>
-        Review Answers
-      </button>
-      <button class="btn" onclick="window.location.href='/'">
-        <i class="fas fa-sync-alt"></i>
-        Try Another Quiz
-      </button>
-    </div>
   </div>
 
-  <!-- Answer Review Modal -->
-  <div id="reviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 1000; overflow-y: auto; padding: 20px;">
-    <div class="container" style="margin: 30px auto; max-width: 900px;">
-      <h2 style="margin-bottom: 30px; text-align: center;">
-        <i class="fas fa-book-open"></i>
-        Answer Review
-      </h2>
+  <!-- Review Modal -->
+  <div id="reviewModal" class="modal-overlay">
+    <div class="modal-inner">
+      <h2><i class="fas fa-book-open" style="color:var(--primary-500);margin-right:8px;"></i> Answer Review</h2>
       <div id="reviewContent"></div>
-      <button class="btn" onclick="closeReview()" style="width: 100%; margin-top: 30px;">
-        <i class="fas fa-times-circle"></i>
-        Close Review
+      <button class="btn btn-primary" onclick="closeReview()" style="width:100%;margin-top:24px;">
+        <i class="fas fa-times-circle"></i> Close Review
       </button>
     </div>
   </div>
 
+  <script src="app.js"></script>
   <script>
     let questions = [];
 
-    window.onload = () => {
+    window.addEventListener('DOMContentLoaded', () => {
       const score = parseInt(localStorage.getItem('score') || 0);
       const total = parseInt(localStorage.getItem('total') || 10);
       const percentage = parseInt(localStorage.getItem('percentage') || 0);
       const timeTaken = parseInt(localStorage.getItem('timeTaken') || 0);
       const questionsStr = localStorage.getItem('questions');
-      
-      if (questionsStr) {
-        questions = JSON.parse(questionsStr);
-      }
+      if (questionsStr) questions = JSON.parse(questionsStr);
 
       document.getElementById('score').textContent = score;
       document.getElementById('total').textContent = total;
-      document.getElementById('percentage').textContent = percentage + '%';
-      document.getElementById('correctCount').textContent = score + ' out of ' + total;
+      document.getElementById('correctCount').textContent = score;
       document.getElementById('accuracy').textContent = percentage + '%';
 
       // Format time
-      const minutes = Math.floor(timeTaken / 60);
-      const seconds = timeTaken % 60;
-      document.getElementById('timeTaken').textContent = minutes > 0 ? minutes + 'm ' + seconds + 's' : seconds + 's';
+      const m = Math.floor(timeTaken / 60);
+      const s = timeTaken % 60;
+      document.getElementById('timeTaken').textContent = m > 0 ? m + 'm ' + s + 's' : s + 's';
+      document.getElementById('avgTime').textContent = Math.round(timeTaken / total) + 's';
 
-      // Average time per question
-      const avgTime = Math.round(timeTaken / total);
-      document.getElementById('avgTime').textContent = avgTime + 's';
+      // Animated ring
+      document.getElementById('ringPercentage').textContent = percentage + '%';
+      const circumference = 2 * Math.PI * 70; // r=70
+      const offset = circumference - (percentage / 100) * circumference;
+      const ring = document.getElementById('scoreRingFill');
+      ring.style.strokeDasharray = circumference;
+      ring.style.strokeDashoffset = circumference;
+      setTimeout(() => { ring.style.strokeDashoffset = offset; }, 200);
 
-      // Set icon and message
-      let icon = '<i class="fas fa-smile"></i>';
-      let message = 'Good Job!';
-      
-      if (percentage >= 90) {
-        icon = '<i class="fas fa-trophy"></i>';
-        message = '🎉 Outstanding! You are a Quiz Master!';
-      } else if (percentage >= 80) {
-        icon = '<i class="fas fa-star"></i>';
-        message = '⭐ Excellent! Great Knowledge!';
-      } else if (percentage >= 70) {
-        icon = '<i class="fas fa-smile"></i>';
-        message = '😊 Very Good! Keep it up!';
-      } else if (percentage >= 60) {
-        icon = '<i class="fas fa-thumbs-up"></i>';
-        message = '👍 Good Effort! Try Again!';
-      } else {
-        icon = '<i class="fas fa-lightbulb"></i>';
-        message = '💡 Keep Learning! You\'ll do better next time!';
-      }
+      // Emoji & message
+      let iconHtml, message;
+      if (percentage >= 90)      { iconHtml = '<i class="fas fa-trophy" style="color:#f59e0b;"></i>'; message = '🎉 Outstanding! You\'re a Quiz Master!'; }
+      else if (percentage >= 80) { iconHtml = '<i class="fas fa-star" style="color:#6366f1;"></i>';  message = '⭐ Excellent! Great knowledge!'; }
+      else if (percentage >= 70) { iconHtml = '<i class="fas fa-face-smile" style="color:#22c55e;"></i>'; message = '😊 Very good! Keep it up!'; }
+      else if (percentage >= 60) { iconHtml = '<i class="fas fa-thumbs-up" style="color:#14b8a6;"></i>';  message = '👍 Good effort! Try again!'; }
+      else                       { iconHtml = '<i class="fas fa-lightbulb" style="color:#f59e0b;"></i>'; message = '💡 Keep learning! You\'ll improve!'; }
 
-      document.getElementById('emoji').innerHTML = icon;
+      document.getElementById('emoji').innerHTML = iconHtml;
       document.getElementById('message').textContent = message;
 
-      // Animate performance bar
+      // Performance bar
       setTimeout(() => {
         document.getElementById('performanceLevel').style.width = percentage + '%';
-      }, 200);
-      
-      let performanceText = 'Average';
-      if (percentage >= 90) performanceText = '⭐ Excellent';
-      else if (percentage >= 80) performanceText = '✓ Very Good';
-      else if (percentage >= 70) performanceText = '◐ Good';
-      else if (percentage >= 60) performanceText = '△ Fair';
-      else performanceText = '△ Needs Improvement';
-      
-      document.getElementById('performanceText').textContent = performanceText;
-    };
+      }, 300);
 
+      let perfText;
+      if (percentage >= 90)      perfText = '⭐ Excellent';
+      else if (percentage >= 80) perfText = '✓ Very Good';
+      else if (percentage >= 70) perfText = '◐ Good';
+      else if (percentage >= 60) perfText = '△ Fair';
+      else                       perfText = '△ Needs Improvement';
+      document.getElementById('performanceText').textContent = perfText;
+
+      // High score banner
+      const isNew = localStorage.getItem('newHighScore') === 'true';
+      if (isNew) {
+        document.getElementById('highScoreBanner').style.display = 'inline-flex';
+        localStorage.removeItem('newHighScore');
+      }
+
+      // Confetti for great scores
+      if (percentage >= 80) {
+        setTimeout(() => Confetti.launch(), 500);
+      }
+
+      // Sound
+      if (percentage >= 70) {
+        SoundManager.play('correct');
+      }
+    });
+
+    // ─── Review answers ─────────────────────────────
     function viewAnswers() {
       const userAnswers = JSON.parse(localStorage.getItem('userAnswers') || '[]');
       const reviewContent = document.getElementById('reviewContent');
@@ -165,72 +209,57 @@
 
       questions.forEach((q, idx) => {
         const isCorrect = userAnswers[idx] === q.correct_answer;
-        const icon = isCorrect ? '✓' : '✗';
-        const bgColor = isCorrect ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)' : 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%)';
-        const borderColor = isCorrect ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)';
-        
-        const reviewItem = document.createElement('div');
-        reviewItem.style.cssText = `
-          margin-bottom: 18px;
-          padding: 18px;
-          border-radius: 14px;
-          background: ${bgColor};
-          border-left: 5px solid ${isCorrect ? '#10b981' : '#ef4444'};
-          transition: all 0.3s ease;
-          border: 2px solid ${borderColor};
-        `;
-        
-        const statusColor = isCorrect ? '#10b981' : '#ef4444';
-        
-        reviewItem.innerHTML = `
-          <p style="font-weight: 800; margin-bottom: 12px; color: #1e293b; font-size: 1.05em;">
-            <span style="color: ${statusColor}; font-size: 1.2em; margin-right: 8px;">${icon}</span>
-            Question ${idx + 1}: ${q.question}
-          </p>
-          <p style="margin: 10px 0; color: #475569;">
-            <strong style="color: #1e293b;">Your Answer:</strong> 
-            <span style="color: ${isCorrect ? '#10b981' : '#ef4444'}; font-weight: 600;">
-              ${userAnswers[idx] || '<i>Not Answered</i>'}
+        const item = document.createElement('div');
+        item.className = 'review-item ' + (isCorrect ? 'correct' : 'wrong');
+
+        item.innerHTML = `
+          <div class="review-question">
+            <div class="review-status-icon ${isCorrect ? 'correct' : 'wrong'}">
+              <i class="fas ${isCorrect ? 'fa-check' : 'fa-times'}"></i>
+            </div>
+            <div>Q${idx + 1}: ${q.question}</div>
+          </div>
+          <div class="review-answer">
+            <strong>Your answer:</strong>
+            <span class="${isCorrect ? 'correct-text' : 'wrong-text'}">
+              ${userAnswers[idx] || '<em>Not answered</em>'}
             </span>
-          </p>
+          </div>
           ${!isCorrect ? `
-            <p style="margin: 10px 0; color: #475569;">
-              <strong style="color: #1e293b;">Correct Answer:</strong> 
-              <span style="color: #10b981; font-weight: 600;">${q.correct_answer}</span>
-            </p>
+            <div class="review-answer">
+              <strong>Correct answer:</strong>
+              <span class="correct-text">${q.correct_answer}</span>
+            </div>
           ` : ''}
         `;
-        
-        reviewContent.appendChild(reviewItem);
+        reviewContent.appendChild(item);
       });
 
-      document.getElementById('reviewModal').style.display = 'block';
+      document.getElementById('reviewModal').classList.add('active');
+      SoundManager.play('click');
     }
 
     function closeReview() {
-      document.getElementById('reviewModal').style.display = 'none';
+      document.getElementById('reviewModal').classList.remove('active');
     }
 
-    // Close modal on outside click
-    window.onclick = function(event) {
-      const modal = document.getElementById('reviewModal');
-      if (event.target == modal) {
-        modal.style.display = 'none';
-      }
-    }
+    // Close modal on overlay click
+    document.getElementById('reviewModal').addEventListener('click', function(e) {
+      if (e.target === this) closeReview();
+    });
 
+    // ─── Share results ──────────────────────────────
     function shareResults() {
       const score = document.getElementById('score').textContent;
       const total = document.getElementById('total').textContent;
-      const percentage = document.getElementById('percentage').textContent;
-      const message = `🎯 I just scored ${score}/${total} (${percentage}) on Quiz Master! Can you beat my score?`;
-      
-      // Copy to clipboard
-      navigator.clipboard.writeText(message).then(() => {
-        alert('Results copied to clipboard! Share it with friends! 📋');
+      const pct = document.getElementById('accuracy').textContent;
+      const msg = `🎯 I scored ${score}/${total} (${pct}) on Quiz Master! Can you beat me?`;
+
+      navigator.clipboard.writeText(msg).then(() => {
+        Toast.show('Results copied to clipboard! 📋', 'success');
+        SoundManager.play('correct');
       }).catch(() => {
-        // Fallback
-        alert('Score: ' + score + '/' + total + ' (' + percentage + ')');
+        Toast.show('Score: ' + score + '/' + total + ' (' + pct + ')', 'info');
       });
     }
   </script>
